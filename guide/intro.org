@@ -22,7 +22,7 @@ before they can be used. While it is possible to initialize
 variables individually, you can easily initialize all the
 variables in a TensorFlow graph as follows:
 
-#+BEGIN_SRC 
+#+BEGIN_SRC python
 init = tf.global_variables_initializer()
 sess.run(init)
 #+END_SRC
@@ -38,7 +38,7 @@ often need to be initialized. Categorical columns use lookup
 tables internally and these require a separate initialization 
 op, tf.tables_initializer.
 
-#+BEGIN_SRC 
+#+BEGIN_SRC python
 var_init = tf.global_variables_initializer()
 table_init = tf.tables_initializer()
 sess = tf.Session()
@@ -54,7 +54,7 @@ Instead, TensorFlow provides the tf.Print operation, which returns its first ten
 
 To correctly use tf.Print its return value must be used. See the example below
 
-#+BEGIN_SRC 
+#+BEGIN_SRC python
 t = <<some tensorflow operation>>
 tf.Print(t, [t])  # This does nothing
 t = tf.Print(t, [t])  # Here we are using the value returned by tf.Print
