@@ -1,0 +1,46 @@
+* Variable
+
+** Snippets
+
+*** Initializing
+
+**** Dependent Variables Initializing
+
+Any time you use the value of a variable in a context in which
+not all variables are initialized (say, if you use a variable's
+value while initializing another variable), it is best to use
+~variable.initialized_value()~ instead of ~variable~
+
+#+BEGIN_SRC python
+  v = tf.get_variable("v", shape=(), initializer=tf.zeros_initializer())
+  w = tf.get_variable("w", initializer=v.initialized_value() + 1)
+#+END_SRC
+
+*** Using Variables
+
+Because variables are mutable it's sometimes useful to know what
+version of a variable's value is being used at any point in time.
+To force a re-read of the value of a variable after something has
+happened, you can use ~tf.Variable.read_value~. For example:
+
+#+BEGIN_SRC python
+  v = tf.get_variable("v", shape=(), initializer=tf.zeros_initializer())
+  assignment = v.assign_add(1)
+  with tf.control_dependencies([assignment]):
+    w = v.read_value()  # w is guaranteed to reflect v's value after the
+                        # assign_add operation.
+#+END_SRC
+
+
+
+** Q&A
+
+- Creating a Variable: ~tf.get_variable~ also allows you to reuse
+  a previously created variable of the same name, making it easy
+  to define models which reuse layers
+
+  - Variables Scope: using same scope reuse variables. Using
+    different scope create new variables (reuse layers)
+
+
+- Device placement: parameters server, workers
