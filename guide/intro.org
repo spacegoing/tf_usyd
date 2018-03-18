@@ -1,0 +1,78 @@
+* Introduction
+
+** Snippets
+
+*** Head
+#+BEGIN_SRC python
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
+import numpy as np
+import tensorflow as tf
+#+END_SRC
+
+
+
+*** Initializing
+
+****  Layer Initializing
+The layer contains variables that must be initialized
+before they can be used. While it is possible to initialize
+variables individually, you can easily initialize all the
+variables in a TensorFlow graph as follows:
+
+#+BEGIN_SRC 
+init = tf.global_variables_initializer()
+sess.run(init)
+#+END_SRC
+
+Important: Calling tf.global_variables_initializer only creates and returns a handle to a TensorFlow operation. That op
+will initialize all the global variables when we run it with tf.Session.run. Also note that this
+global_variables_initializer only initializes variables that existed in the graph when the initializer was created. So
+the initializer should be one of the last things added during graph construction.~
+
+**** Inputs Initializing
+Feature columns can have internal state, like layers, so they
+often need to be initialized. Categorical columns use lookup
+tables internally and these require a separate initialization 
+op, tf.tables_initializer.
+
+#+BEGIN_SRC 
+var_init = tf.global_variables_initializer()
+table_init = tf.tables_initializer()
+sess = tf.Session()
+sess.run((var_init, table_init))
+#+END_SRC
+
+
+** Debugging
+
+*** Printing
+
+Instead, TensorFlow provides the tf.Print operation, which returns its first tensor argument unchanged while printing the set of tf.Tensors it is passed as the second argument.
+
+To correctly use tf.Print its return value must be used. See the example below
+
+#+BEGIN_SRC 
+t = <<some tensorflow operation>>
+tf.Print(t, [t])  # This does nothing
+t = tf.Print(t, [t])  # Here we are using the value returned by tf.Print
+result = t + 1  # Now when result is evaluated the value of `t` will be printed.
+#+END_SRC
+
+When you evaluate result you will evaluate everything result depends upon. Since result depends upon t, and evaluating t has the side effect of printing its input (the old value of t), t gets printed.
+
+
+** Gotchas 
+
+*** Layer Function shortcuts
+
+
+
+
+
+
+
+
+
