@@ -2,3 +2,7 @@
 ** Variable
 
 *** Static Shape v.s. Dynamic Shape
+
+https://stackoverflow.com/questions/37096225/how-to-understand-static-shape-and-dynamic-shape-in-tensorflow
+
+https://blog.metaflow.fr/shapes-and-dynamic-dimensions-in-tensorflow-7b1fe79be363
