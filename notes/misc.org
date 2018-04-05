@@ -1,0 +1,10 @@
+* MISC
+
+** OOM Error
+
+Out Of Memory Error
+
+- Clear GPU Memory: https://stackoverflow.com/questions/15197286/how-can-i-flush-gpu-memory-using-cuda-physical-reset-is-unavailable
+  - list GPU usage: ~sudo fuser -v /dev/nvidia*~
+  - kill AID: ~kill -9 PID~
+- Lower Batch Size: https://stackoverflow.com/questions/42495930/tensorflow-oom-on-gpu 

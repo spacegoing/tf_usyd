@@ -1,0 +1,95 @@
+* TensorBoard 学习
+TensorBoard: Visualizing Learning 这个教程的实例代码比较烂，不要
+看，（至少我看的费劲）去看这里面的 视频教程和视频里给出的示例代码，
+这里面的写的非常好，一定要看
+视频网址：https://youtu.be/eBbEDRsCmv4
+代码网址： https://github.com/dandelionmane/tf-dev-summit-tensorboard-tutorial
+readme一定要看： https://github.com/tensorflow/tensorboard
+** Summary Operations | Generation of Summaries
+Summary ops take in tensors, produce tensors but have a twist:
+the Tensors they produce contain serialized protobufs, which are
+written to disk and sent to TensorBoard
+
+- summary 也是一种 op ，定义 summary 后，他的名字和其他所有 op 一
+  样，都会根据 name_scope 变化。
+- When you make a summary op, you will also give it a ~tag~ The
+  tag is basically a name for the data recorded by that op.
+  tensorboard 的 images/histogram/scalar dashboard 按这个tag组织
+  图像。 注意：tf.summary.scalar('fc1/prob') 这种方法和使用
+  namespace('fc1')下创建 tf.summary.scalar('prob') 的方法效果是一
+  样的，都会被归类在 tensorboard里面 scaler dashboard下相应的
+  ~fc1~ 这个tag下。
+- 所有 op 包括 summary op 都会在 graph dashboard 下显示出来。
+  tf.name_scope 可以很好的把相关的 op group 在一起，这样 使用
+  tensorboard 可视化 graph 的时候非常有清晰。
+  - 注意，上面的 tf.summary.scalar('fc1/prob') 不会被归类为 fc1
+    namespace 那个块中。 这是个 bug 吗？ todo ，提交 issue。
+*** tf.summary.scalar
+- 在 build graph 阶段，指定对哪个 node 添加 summary operation。
+- 典型用法，对 Loss 添加 summary
+#+BEGIN_SRC python
+# 'loss' 是名称， 也会用在 tensorboard 中， loss 是 一个 scalar tensor
+summary_loss=tf.summary.scalar('loss', loss)
+# 返回一个能够 eval 的 string 类型的 tensor
+#+END_SRC
+*** tf.summary.image
+tf.summary.image('input', image_shaped_input, 10)
+最后一个参数10 表示一次 iteration 一个 batch 里面可能有多张图片，
+只存储10个。
+*** tf.summary.histogram
+可以画出 weights, gradient, activation 的分布！
+*** tf.summary.merge_all
+在图构建过程：对 default graph 中之前所有定义好了的 summary op
+进行 merge 成一个。注意，返回的是一个可以 eval 的string 类型的
+tensor
+*** tf.summary.FileWriter(class)
+
+- 初始化
+
+  实例化时，不仅会创建一个 FileWriter 对象， 还会在指定的 logdir
+  中创建一个 event file。
+
+  BP：并且一般也会把 graph 传入给这个 event file
+  #+BEGIN_SRC python
+# ...create a graph...
+# Launch the graph in a session.
+sess = tf.Session()
+# Create a summary writer, add the 'graph' to the event file.
+writer = tf.summary.FileWriter('logdir', sess.graph)
+# 注意它不识别 ~ 符号，绝对路径、相对路径均可
+  #+END_SRC
+
+- add_summary
+  先 run summary 那个 operation ，再把得到的 summay_str 传入给
+  add_summary 方法更新文件
+  #+BEGIN_SRC python
+#BP： 使用step 参数 过N个step，执行一次 ，而不是每次都执行，没必要
+summary_str = sess.run(summary, feed_dict=feed_dict)  
+summary_writer.add_summary(summary_str, step) 
+
+# 一般用下面这个方法确保所有的事件都写进去了
+summary_writer.flush() 
+  #+END_SRC
+** 经验
+多用多熟悉
+- smoothing
+*** Graph Dashboard
+双指 上下 放大缩小
+reference edge: 双向箭头（分开成了 auxiliary Nodes） 或者 Main
+graph （黄色箭头）
+*** 不同 namespace/tab 的选择
+*** trace input
+*** 搜索功能（正则表达式）
+- .*  全选
+- conv1/bias 这种搜索方法
+*** distribution 9 线条含义
+*** Scalar Dashboard操作
+- Dragging a rectangular region on the chart will zoom in
+*** 多个 subdir 和 多个 eventfile 的问题
+- tesenflow 从checkpoint 重启的问题，目前tensorboard 会帮助我们
+  handle 多个 event file
+- 但是一定要保证 一种模型只对应一个 subfolder。也就是说，重新写了
+  模型后，记得保证目标文件夹为空。
+*** Main graph 和 auxilary graph
+- Node 可以在两个之间拖动。尤其是 连线多的节点，可以放到 auxilary
+  graph中使之更简洁。
