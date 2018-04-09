@@ -1,5 +1,17 @@
 * Basic Concepts
 ** Variable
+*** Naming
+https://www.tensorflow.org/programmers_guide/graphs
+
+~capsule/add:0~
+
+Note that tf.Tensor objects are implicitly named after the
+tf.Operation that produces the tensor as output. A tensor name
+has the form "<OP_NAME>:<i>" where:
+
+- "<OP_NAME>" is the name of the operation that produces it.
+- "<i>" is an integer representing the index of that tensor among
+  the operation's outputs.
 
 *** Static Shape v.s. Dynamic Shape
 
