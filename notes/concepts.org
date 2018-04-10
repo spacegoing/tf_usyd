@@ -1,5 +1,33 @@
 * Basic Concepts
 ** Variable
+*** Reproducible Results (Setting Random Seeds)
+
+https://gist.github.com/tnq177/ce34bcf6b20243b0b5b23c78833e7945
+
+#+BEGIN_SRC python
+tf.reset_default_graph()
+with tf.Graph().as_default():
+    tf.set_random_seed(42)
+    
+    with tf.Session() as sess:
+        ...define graph here...
+#+END_SRC
+
+- Must reset default graph before defining graph & must set
+  random seed before creating session.
+- Some GPU ops are not fully deterministic
+- Some said setting the graph seed is not enough, and op seed is
+  also required, but so far just graph seed works for me
+- ref: http://stackoverflow.com/a/40247201/2005810
+
+**** deterministic batch
+
+- ~num_threads~ : The batching will be nondeterministic if
+  num_threads > 1
+- ~shuffle_batch~:
+  https://stackoverflow.com/questions/48156405/tensorflow-shuffle-batch-non-deterministic
+
+
 *** Naming
 https://www.tensorflow.org/programmers_guide/graphs
 
