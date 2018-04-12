@@ -13,6 +13,8 @@ with tf.Graph().as_default():
         ...define graph here...
 #+END_SRC
 
+- Must set random seed before node is created (thus will using
+  the seed we set)
 - Must reset default graph before defining graph & must set
   random seed before creating session.
 - Some GPU ops are not fully deterministic
