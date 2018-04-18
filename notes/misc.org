@@ -4,6 +4,8 @@
 
 Out Of Memory Error
 
+- Simpler Version: ~CUDA_VISIBLE_DEVICES=''~ https://github.com/tensorflow/tensorflow/issues/9549
+
 - Clear GPU Memory: https://stackoverflow.com/questions/15197286/how-can-i-flush-gpu-memory-using-cuda-physical-reset-is-unavailable
   - list GPU usage: ~sudo fuser -v /dev/nvidia*~
   - kill AID: ~kill -9 PID~
